@@ -1,5 +1,5 @@
 from emailer import Email
-from config import *
+import config
 from input_window import *
 
 def main():

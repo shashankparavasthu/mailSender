@@ -5,6 +5,8 @@ import json
 
 port = 465
 context = ssl.create_default_context()
+dynamic_character = '$'
+extensions = ['.pdf','.jpeg','.png','.jpg']
 
 def init_recipients():
     global excel_file_path
@@ -27,6 +29,9 @@ def init_recipients():
     
     print(json.dumps(recipients))
 
+def set_attachment_folder():
+    global attachment_folder
+    attachment_folder = filedialog.askdirectory(title="select attachment folder:")
 
 def init_buttons():
     global buttons 
