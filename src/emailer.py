@@ -5,6 +5,7 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email.mime.multipart import MIMEMultipart
 from email import encoders
+import update_display
 
 class Email:
     def __init__(self,sender_username, recipient_username, subject, message, attachment):
@@ -30,7 +31,7 @@ class Email:
 
         #send mail
         server.sendmail(self.sender_username, self.recipient_username, message.as_string())
-        print("sent mail to ", self.recipient_username)
+        update_display.update_display("sent mail to: " + self.recipient_username)
 
     def add_attachment(self):
 
@@ -48,7 +49,7 @@ class Email:
 
         # Add header as key/value pair to attachment part
         file_attachment.add_header(
-            'Content-Disposition', 'attachment', filename= filename
+            'Content-Disposition', 'attachment', filename= self.attachment
         )
 
         return file_attachment

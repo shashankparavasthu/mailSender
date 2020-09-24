@@ -3,9 +3,13 @@ import config
 import smtplib, ssl
 from emailer import Email
 import refactor
+import update_display
+import email_results
+
 
 def send_emails(sender_username, password, subject, message, attachment, extension):
-    config.buttons[1].config(state='disabled')
+    # config.buttons[1].config(state='disabled')
+    update_display.disable_all_input()
 
     sender_email = sender_username.get()
     user_password = password.get()
@@ -14,18 +18,46 @@ def send_emails(sender_username, password, subject, message, attachment, extensi
     attachment_regex = attachment.get()
     attachment_extension = extension.get()
 
+    email_results.create_results_sheet()
+
     with smtplib.SMTP_SSL("smtp.gmail.com", config.port, context=config.context) as server:
+        # try:    
         # login with credentials
         server.login(sender_email, user_password)
         
+        recipient_count = 0
         #iterate over recipients list and send mail to each of them
         for recipient in config.recipients:
-            personal_subject = refactor.refactor(recipient, email_subject)
-            personal_message = refactor.refactor(recipient, email_message)
-            attachment_value = refactor.refactor(recipient, attachment_regex)
-            attachment_value = attachment_value + attachment_extension
-            new_email = Email(sender_email, recipient, personal_subject, personal_message, attachment_value)
-            new_email.send_email(server)
+
+            #add recipient to email results
+            recipient_count = recipient_count + 1
+            email_results.add_cell_value(recipient_count, 1, recipient)
+            
+            try:
+                personal_subject = refactor.refactor(recipient, email_subject)
+                personal_message = refactor.refactor(recipient, email_message)
+                attachment_value = refactor.refactor(recipient, attachment_regex)
+                attachment_value = attachment_value + attachment_extension
+                new_email = Email(sender_email, recipient, personal_subject, personal_message, attachment_value)
+                new_email.send_email(server)
+                
+                sent_message = "sent mail to: " + recipient
+                update_display.update_display(sent_message)
+                email_results.add_cell_value(recipient_count, 2, sent_message)
+
+            except Exception as e:
+                exception_message = str(e)
+                
+                update_display.update_display(exception_message)
+                email_results.add_cell_value(recipient_count, 2, exception_message)
+
+                continue
         
+        #save workbook after sending all mails                    
+        email_results.save_results()    
+            
+        # except Exception as e: 
+        #     update_display.update_display(str(e))    
+        #     pass    
 
                 
