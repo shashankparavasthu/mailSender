@@ -21,43 +21,44 @@ def send_emails(sender_username, password, subject, message, attachment, extensi
     email_results.create_results_sheet()
 
     with smtplib.SMTP_SSL("smtp.gmail.com", config.port, context=config.context) as server:
-        # try:    
-        # login with credentials
-        server.login(sender_email, user_password)
-        
-        recipient_count = 0
-        #iterate over recipients list and send mail to each of them
-        for recipient in config.recipients:
-
-            #add recipient to email results
-            recipient_count = recipient_count + 1
-            email_results.add_cell_value(recipient_count, 1, recipient)
+        try:    
+            # login with credentials
+            server.login(sender_email, user_password)
             
-            try:
-                personal_subject = refactor.refactor(recipient, email_subject)
-                personal_message = refactor.refactor(recipient, email_message)
-                attachment_value = refactor.refactor(recipient, attachment_regex)
-                attachment_value = attachment_value + attachment_extension
-                new_email = Email(sender_email, recipient, personal_subject, personal_message, attachment_value)
-                new_email.send_email(server)
-                
-                sent_message = "sent mail to: " + recipient
-                update_display.update_display(sent_message)
-                email_results.add_cell_value(recipient_count, 2, sent_message)
+            recipient_count = 0
+            #iterate over recipients list and send mail to each of them
+            for recipient in config.recipients:
 
-            except Exception as e:
-                exception_message = str(e)
+                #add recipient to email results
+                recipient_count = recipient_count + 1
+                email_results.add_cell_value(recipient_count, 1, recipient)
                 
-                update_display.update_display(exception_message)
-                email_results.add_cell_value(recipient_count, 2, exception_message)
+                try:
+                    personal_subject = refactor.refactor(recipient, email_subject)
+                    personal_message = refactor.refactor(recipient, email_message)
+                    attachment_value = refactor.refactor(recipient, attachment_regex)
+                    attachment_value = attachment_value + attachment_extension
+                    new_email = Email(sender_email, recipient, personal_subject, personal_message, attachment_value)
+                    new_email.send_email(server)
+                    
+                    sent_message = "sent mail from " + sender_email + " to " + recipient
+                    update_display.update_display(sent_message)
+                    email_results.add_cell_value(recipient_count, 2, sent_message)
 
-                continue
+                except Exception as e:
+                    exception_message = str(e)
+                    
+                    update_display.update_display(exception_message)
+                    email_results.add_cell_value(recipient_count, 2, exception_message)
+
+                    continue
         
-        #save workbook after sending all mails                    
-        email_results.save_results()    
-            
-        # except Exception as e: 
-        #     update_display.update_display(str(e))    
-        #     pass    
+            #save workbook after sending all mails                    
+            email_results.save_results()    
+            update_display.update_display("Completed.")
+                
+        except Exception as e: 
+            update_display.update_display(str(e))    
+            pass    
 
                 

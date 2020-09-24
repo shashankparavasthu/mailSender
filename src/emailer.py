@@ -31,7 +31,7 @@ class Email:
 
         #send mail
         server.sendmail(self.sender_username, self.recipient_username, message.as_string())
-        update_display.update_display("sent mail to: " + self.recipient_username)
+        
 
     def add_attachment(self):
 
