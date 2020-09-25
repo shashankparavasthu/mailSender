@@ -7,7 +7,7 @@ import update_display
 port = 465
 context = ssl.create_default_context()
 dynamic_character = '$'
-extensions = ['.pdf','.jpeg','.png','.jpg']
+extensions = ['.pdf', '.jpeg', '.png', '.jpg', '.JPG', '.PNG', '.JPEG', '.PDF']
 results_sheet_name = "Email Results"
 
 def init_recipients(mail_list_file):

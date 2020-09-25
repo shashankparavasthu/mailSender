@@ -41,7 +41,7 @@ def send_emails(sender_username, password, subject, message, attachment, extensi
                     new_email = Email(sender_email, recipient, personal_subject, personal_message, attachment_value)
                     new_email.send_email(server)
                     
-                    sent_message = "sent mail from " + sender_email + " to " + recipient
+                    sent_message = str(recipient_count) + "sent mail from " + sender_email + " to " + recipient
                     update_display.update_display(sent_message)
                     email_results.add_cell_value(recipient_count, 2, sent_message)
 
